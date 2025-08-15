@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry 01</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to full window
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let time = 0;
+        const numDots = 8;
+       // const dotsPerSpiral = 50;
+        const size = 5; // size of dot
+      
+        function animate() {
+            // Clear canvas with black background
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // get center of device screen
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+            // for loop
+          for (let i=0;i<numDots;i++){
+            const angle = (i / numDots) * Math.PI * 2 + time;  // This is the magic!
+            //            ↑ evenly spaces them    ↑ makes them rotate
+
+            // determine place
+            const radius =100;
+            const x = centerX + Math.cos(angle)*radius;
+            const y = centerY + Math.sin(angle)*radius;
+
+            // draw the dot
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+          }
+            time += 0.02;
+            requestAnimationFrame(animate);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Start the animation
+        animate();
+    </script>
+</body>
+</html>
