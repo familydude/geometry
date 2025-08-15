@@ -32,7 +32,7 @@
         canvas.height = window.innerHeight;
         
         let time = 0;
-        const numDots = 8;
+        const numDots = 18;
        // const dotsPerSpiral = 50;
         const size = 5; // size of dot
       
@@ -49,7 +49,7 @@
             //            ↑ evenly spaces them    ↑ makes them rotate
 
             // determine place
-            const radius =100;
+            const radius = 100 + Math.sin(time + i * Math.PI) * 50;
             const x = centerX + Math.cos(angle)*radius;
             const y = centerY + Math.sin(angle)*radius;
             
