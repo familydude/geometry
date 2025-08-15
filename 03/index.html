@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry 02</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to full window
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let time = 0;
+        const numDots = 18;
+       // const dotsPerSpiral = 50;
+        const size = 5; // size of dot
+      
+        function animate() {
+           ctx.fillStyle = 'rgba(0, 0, 0, 0.01)'; // Very transparent black, to create trails
+           ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // get center of device screen
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+            // for loop
+          for (let i=0;i<numDots;i++){
+            const angle = (i / numDots) * Math.PI * 2 + time;  // This is the magic!
+            //            ↑ evenly spaces them    ↑ makes them rotate
+
+            // determine place
+            const orbitRadius = 150;
+            const wobble = Math.sin(time * 3 + i) * 30;
+            
+ 
+            const radius = 100 + Math.sin(time + i * Math.PI) * 50;
+            const r = radius + Math.sin(time * 2 + i) * 5 + Math.cos(time * 3 + i * 0.5) * 25;
+            const x = centerX + Math.cos(angle)*r;
+            const y = centerY + Math.sin(angle)*r;
+            
+            
+            // draw the dot
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            const hue = 240 + Math.sin(time * 2) * 60; // oscillates between 180-300
+            ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+
+            
+            ctx.fill();
+          }
+            time += 0.02;
+            requestAnimationFrame(animate);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Start the animation
+        animate();
+    </script>
+</body>
+</html>
