@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Geometry</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #0a0a0a, #000000);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: none;
+            filter: blur(0.3px) brightness(1.2);
+            box-shadow: 0 0 100px rgba(100, 200, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to full window
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let time = 0;
+        const numDots = 120;
+        const size = 6; // slightly bigger for glow effect
+      
+        function animate() {
+           // More pronounced trails for dreamy effect
+           ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+           ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+            
+          for (let i = 0; i < numDots; i++){
+            // Your beautiful layered radius calculation with more subdivision variety
+            const angle = (i / numDots) * Math.PI * 2 + time;
+            
+            // Multiple orbital layers at different radii
+            const layer = Math.floor(i / (numDots / 3)); // 3 main layers
+            const baseRadius = 80 + layer * 60; // layers at 80, 140, 200
+            
+            const r = baseRadius
+                    + Math.sin(time * 2 + i) * 40   
+                    + Math.cos(time * 3.5 + i * 0.5) * 25  
+                    + Math.sin(time * 7 + i * 2) * 10
+                    + Math.sin(time * 1.2 + i * 0.3) * 15; // extra wave for complexity 
+
+            const x = centerX + Math.cos(angle) * r;
+            const y = centerY + Math.sin(angle) * r;
+
+            // Enhanced color with more variation
+            const hue = 200 + Math.sin(time * 1.5 + i) * 100 + Math.cos(time * 0.5 + i * 0.3) * 60;
+            const saturation = 70 + Math.sin(time + i * 0.1) * 20;
+            const lightness = 50 + Math.sin(time * 0.8 + i) * 20;
+            
+            // Variable dot size - can get quite small but not much bigger
+            const baseSize = 2 + Math.sin(time * 3 + i * 1.2) * 1.5 + Math.cos(time * 5 + i * 0.8) * 0.8;
+            const dotSize = Math.max(0.5, baseSize); // minimum size so they don't disappear
+            
+            // Create glow effect with multiple layers
+            const glowSize = dotSize + Math.sin(time * 4 + i) * 0.5;
+            
+            // Outer glow (very soft)
+            ctx.beginPath();
+            ctx.arc(x, y, glowSize * 3, 0, Math.PI * 2);
+            const gradient1 = ctx.createRadialGradient(x, y, 0, x, y, glowSize * 3);
+            gradient1.addColorStop(0, `hsla(${hue}, ${saturation}%, ${lightness + 20}%, 0.1)`);
+            gradient1.addColorStop(1, `hsla(${hue}, ${saturation}%, ${lightness + 20}%, 0)`);
+            ctx.fillStyle = gradient1;
+            ctx.fill();
+            
+            // Middle glow
+            ctx.beginPath();
+            ctx.arc(x, y, glowSize * 1.5, 0, Math.PI * 2);
+            const gradient2 = ctx.createRadialGradient(x, y, 0, x, y, glowSize * 1.5);
+            gradient2.addColorStop(0, `hsla(${hue}, ${saturation}%, ${lightness + 10}%, 0.3)`);
+            gradient2.addColorStop(1, `hsla(${hue}, ${saturation}%, ${lightness + 10}%, 0)`);
+            ctx.fillStyle = gradient2;
+            ctx.fill();
+            
+            // Core dot (bright)
+            ctx.beginPath();
+            ctx.arc(x, y, glowSize, 0, Math.PI * 2);
+            const gradient3 = ctx.createRadialGradient(x, y, 0, x, y, glowSize);
+            gradient3.addColorStop(0, `hsl(${hue}, ${saturation + 20}%, ${lightness + 30}%)`);
+            gradient3.addColorStop(1, `hsla(${hue}, ${saturation}%, ${lightness}%, 0.8)`);
+            ctx.fillStyle = gradient3;
+            ctx.fill();
+          }
+            
+            time += 0.005;
+            requestAnimationFrame(animate);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Start the animation
+        animate();
+    </script>
+</body>
+</html>
